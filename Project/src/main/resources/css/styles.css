@@ -1,0 +1,102 @@
+/* Traditional Chinese Color Palette */
+* {
+    -fx-font-family: "Microsoft YaHei", "SimSun", "Segoe UI", sans-serif;
+}
+
+.root {
+    -fx-background-color: #F5F5DC; /* Rice Paper */
+}
+
+.header-label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8B0000; /* Imperial Red */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.sub-header-label {
+    -fx-font-size: 18px;
+    -fx-text-fill: #2F4F4F; /* Ink Black */
+}
+
+.text-field, .password-field {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 5;
+    -fx-border-color: #D2B48C; /* Tan */
+    -fx-border-radius: 5;
+    -fx-padding: 8;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #8B0000;
+    -fx-effect: dropshadow(three-pass-box, rgba(139, 0, 0, 0.2), 5, 0, 0, 0);
+}
+
+.primary-button {
+    -fx-background-color: #8B0000; /* Imperial Red */
+    -fx-text-fill: #FFD700; /* Gold */
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 10 20;
+}
+
+.primary-button:hover {
+    -fx-background-color: #A52A2A;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 1);
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2F4F4F;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-text-fill: #8B0000;
+}
+
+.card-pane {
+    -fx-background-color: #F8F8FF; /* White Jade */
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-border-color: #D2B48C;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.menu-button-active {
+    -fx-background-color: #8B0000;
+    -fx-text-fill: white;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #F5F5DC;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #E0E0E0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #8B0000;
+}
+
+.tab-pane .tab:selected .text {
+    -fx-fill: white;
+}
+
+.list-view {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+}
+
+.list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: #F0E68C; /* Khaki */
+}

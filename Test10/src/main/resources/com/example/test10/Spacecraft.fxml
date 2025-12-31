@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Java课程实验FX.SpacecraftController"
+            prefHeight="500.0" prefWidth="850.0">
+    
+    <!-- Top Section: Search Bar -->
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="飞船名称:" />
+            <TextField fx:id="searchField" prefWidth="200.0" />
+            <Button fx:id="searchButton" text="查询" onAction="#handleSearch" />
+        </HBox>
+    </top>
+    
+    <!-- Center Section: TableView -->
+    <center>
+        <TableView fx:id="spacecraftTable">
+            <BorderPane.margin>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </BorderPane.margin>
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" minWidth="50.0" />
+                <TableColumn fx:id="nameColumn" text="飞船名称" minWidth="100.0" />
+                <TableColumn fx:id="launchTimeColumn" text="发射时间" minWidth="150.0" />
+                <TableColumn fx:id="launchSiteColumn" text="发射地点" minWidth="150.0" />
+                <TableColumn fx:id="summaryColumn" text="任务概述" minWidth="350.0" />
+            </columns>
+        </TableView>
+    </center>
+    
+    <!-- Bottom Section: Action Buttons -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="addButton" text="添加" onAction="#handleAdd" />
+            <Button fx:id="deleteButton" text="删除" onAction="#handleDelete" />
+            <Button fx:id="updateButton" text="修改" onAction="#handleUpdate" />
+            <Button fx:id="exitButton" text="退出" onAction="#handleExit" />
+        </HBox>
+    </bottom>
+    
+</BorderPane>

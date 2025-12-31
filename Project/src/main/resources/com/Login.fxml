@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="museum.controller.LoginController">
+   <children>
+      <VBox alignment="CENTER" layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" spacing="20.0" styleClass="card-pane">
+         <children>
+            <Label styleClass="header-label" text="中华古建筑/非遗" />
+            <Label styleClass="header-label" text="数字博物馆" />
+            <Line endX="100.0" startX="-100.0" stroke="#8b0000" strokeWidth="2.0" />
+            
+            <Label styleClass="sub-header-label" text="用户登录" />
+            
+            <VBox alignment="CENTER_LEFT" maxWidth="250.0" spacing="5.0">
+               <children>
+                  <Label text="用户名:" />
+                  <TextField fx:id="usernameField" promptText="请输入用户名" />
+               </children>
+            </VBox>
+            
+            <VBox alignment="CENTER_LEFT" maxWidth="250.0" spacing="5.0">
+               <children>
+                  <Label text="密码:" />
+                  <PasswordField fx:id="passwordField" promptText="请输入密码" />
+               </children>
+            </VBox>
+            
+            <Button mnemonicParsing="false" onAction="#handleLogin" prefWidth="250.0" styleClass="primary-button" text="登 录" />
+            
+            <Button mnemonicParsing="false" onAction="#handleRegisterLink" styleClass="secondary-button" text="还没有账号？去注册" />
+         </children>
+      </VBox>
+      <Label layoutX="14.0" layoutY="569.0" text="© 2025 中华古建筑/非遗数字博物馆展示系统" textFill="#6b6b6b" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+   </children>
+</AnchorPane>
