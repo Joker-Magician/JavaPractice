@@ -227,15 +227,7 @@ public class AdminDashboardController {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
                 try {
-                    Architecture a = new Architecture(
-                            name.getText(),
-                            dynasty.getText(),
-                            location.getText(),
-                            type.getText(),
-                            description.getText(),
-                            imagePath.getText(),
-                            Integer.parseInt(year.getText())
-                    );
+                    Architecture a = new Architecture(name.getText(), dynasty.getText(), location.getText(), type.getText(), description.getText(), imagePath.getText(), Integer.parseInt(year.getText()));
                     a.setCreatedBy(SessionManager.getInstance().getCurrentUser().getUserId());
                     return a;
                 } catch (NumberFormatException e) {

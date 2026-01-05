@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.application.Application;
+import museum.constants.AppConstants; // [ADDED] 导入常量类
 
 import java.io.IOException;
 
@@ -20,10 +21,10 @@ public class MainApp extends Application {
 
     public static void showLoginScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(AppConstants.FXML_LOGIN)); // [MODIFIED] 使用常量
             Parent root = loader.load();
-            Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
+            Scene scene = new Scene(root, AppConstants.LOGIN_WIDTH, AppConstants.LOGIN_HEIGHT); // [MODIFIED] 使用常量
+            scene.getStylesheets().add(MainApp.class.getResource(AppConstants.CSS_MAIN).toExternalForm()); // [MODIFIED] 使用常量
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
@@ -33,10 +34,10 @@ public class MainApp extends Application {
 
     public static void showRegisterScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/Register.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(AppConstants.FXML_REGISTER)); // [MODIFIED] 使用常量
             Parent root = loader.load();
-            Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
+            Scene scene = new Scene(root, AppConstants.LOGIN_WIDTH, AppConstants.LOGIN_HEIGHT); // [MODIFIED] 使用常量
+            scene.getStylesheets().add(MainApp.class.getResource(AppConstants.CSS_MAIN).toExternalForm()); // [MODIFIED] 使用常量
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
@@ -46,10 +47,10 @@ public class MainApp extends Application {
 
     public static void showMainDashboard(){
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/MainDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(AppConstants.FXML_MAIN_DASHBOARD)); // [MODIFIED] 使用常量
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1024, 768);
-            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
+            Scene scene = new Scene(root, AppConstants.DASHBOARD_WIDTH, AppConstants.DASHBOARD_HEIGHT); // [MODIFIED] 使用常量
+            scene.getStylesheets().add(MainApp.class.getResource(AppConstants.CSS_MAIN).toExternalForm()); // [MODIFIED] 使用常量
             primaryStage.setScene(scene);
             primaryStage.centerOnScreen();
             primaryStage.show();
@@ -60,10 +61,10 @@ public class MainApp extends Application {
 
     public static void showAdminDashboard(){
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/AdminDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(AppConstants.FXML_ADMIN_DASHBOARD)); // [MODIFIED] 使用常量
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1024, 768);
-            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
+            Scene scene = new Scene(root, AppConstants.DASHBOARD_WIDTH, AppConstants.DASHBOARD_HEIGHT); // [MODIFIED] 使用常量
+            scene.getStylesheets().add(MainApp.class.getResource(AppConstants.CSS_MAIN).toExternalForm()); // [MODIFIED] 使用常量
             primaryStage.setScene(scene);
             primaryStage.centerOnScreen();
             primaryStage.show();

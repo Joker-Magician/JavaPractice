@@ -3,24 +3,18 @@ package museum.controller;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import museum.MainApp;
+import museum.constants.AppConstants; // [ADDED] 导入常量类
 import museum.dao.ArchitectureDAO;
 import museum.dao.HeritageDAO;
 import museum.entity.Architecture;
 import museum.entity.Heritage;
 import museum.utils.SessionManager;
-
-import java.io.IOException;
+import museum.utils.UIHelper; // [ADDED] 导入 UI 工具类
 
 public class MainDashboardController {
 
@@ -60,64 +54,26 @@ public class MainDashboardController {
         refreshData();
     }
 
+    // [MODIFIED] 使用 UIHelper 简化列表设置，消除重复代码
     private void setupHeritageList() {
-        heritageListView.setCellFactory(lv -> new ListCell<Heritage>() {
-            @Override
-            protected void updateItem(Heritage item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    // Simple custom cell layout
-                    VBox vbox = new VBox(5);
-                    Label nameLabel = new Label(item.getName());
-                    nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #8B0000;");
-                    Label detailLabel = new Label(item.getCategory() + " | " + item.getRegion());
-                    vbox.getChildren().addAll(nameLabel, detailLabel);
-                    setGraphic(vbox);
-                }
-            }
-        });
-
-        heritageListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Heritage selected = heritageListView.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showHeritageDetail(selected);
-                }
-            }
-        });
+        UIHelper.setupCustomListView(
+                heritageListView,
+                Heritage::getName,  // 名称提取器
+                h -> h.getCategory() + " | " + h.getRegion(),  // 详情提取器
+                AppConstants.STYLE_NAME_LABEL_HERITAGE,  // 样式
+                this::showHeritageDetail  // 双击回调
+        );
     }
 
+    // [MODIFIED] 使用 UIHelper 简化列表设置，消除重复代码
     private void setupArchitectureList() {
-        architectureListView.setCellFactory(lv -> new ListCell<Architecture>() {
-            @Override
-            protected void updateItem(Architecture item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    // Simple custom cell layout
-                    VBox vbox = new VBox(5);
-                    Label nameLabel = new Label(item.getName());
-                    nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2F4F4F;");
-                    Label detailLabel = new Label(item.getDynasty() + " | " + item.getLocation());
-                    vbox.getChildren().addAll(nameLabel, detailLabel);
-                    setGraphic(vbox);
-                }
-            }
-        });
-
-        architectureListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Architecture selected = architectureListView.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showArchitectureDetail(selected);
-                }
-            }
-        });
+        UIHelper.setupCustomListView(
+                architectureListView,
+                Architecture::getName,  // 名称提取器
+                a -> a.getDynasty() + " | " + a.getLocation(),  // 详情提取器
+                AppConstants.STYLE_NAME_LABEL_ARCHITECTURE,  // 样式
+                this::showArchitectureDetail  // 双击回调
+        );
     }
 
     private void refreshData() {
@@ -166,39 +122,23 @@ public class MainDashboardController {
         architectureSection.setManaged(false);
     }
 
+    // [MODIFIED] 使用 UIHelper 简化详情窗口显示
     private void showHeritageDetail(Heritage heritage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/HeritageDetail.fxml"));
-            Parent root = loader.load();
-
-            HeritageDetailController controller = loader.getController();
-            controller.setHeritage(heritage);
-
-            Stage stage = new Stage();
-            stage.setTitle(heritage.getName());
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        UIHelper.showDetailWindow(
+                AppConstants.FXML_HERITAGE_DETAIL,
+                heritage.getName(),
+                heritage,
+                HeritageDetailController::setHeritage
+        );
     }
 
+    // [MODIFIED] 使用 UIHelper 简化详情窗口显示
     private void showArchitectureDetail(Architecture architecture) {
-        try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/ArchitectureDetail.fxml"));
-            Parent root = loader.load();
-
-            ArchitectureDetailController controller = loader.getController();
-            controller.setArchitecture(architecture);
-
-            Stage stage = new Stage();
-            stage.setTitle(architecture.getName());
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        UIHelper.showDetailWindow(
+                AppConstants.FXML_ARCHITECTURE_DETAIL,
+                architecture.getName(),
+                architecture,
+                ArchitectureDetailController::setArchitecture
+        );
     }
 }
