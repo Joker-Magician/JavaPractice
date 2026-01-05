@@ -24,7 +24,7 @@ public class LoginController {
     public LoginController() { this.userDAO = new UserDAO(); }
 
     @FXML
-    private void loginButtonAction(ActionEvent event) {
+    private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
 

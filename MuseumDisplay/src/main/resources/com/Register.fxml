@@ -8,38 +8,37 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="museum.controller.RegisterController">
    <children>
       <VBox alignment="CENTER" layoutX="250.0" layoutY="50.0" prefHeight="500.0" prefWidth="300.0" spacing="15.0" styleClass="card-pane">
          <children>
             <Label text="新用户注册" />
-            <Line endX="100.0" startX="-100.0" />
-            <VBox prefHeight="39.0" prefWidth="201.0">
+            <Line endX="100.0" startX="-100.0" stroke="DARKRED" />
+            <VBox maxWidth="250.0" spacing="5.0">
                <children>
                   <Label text="用户名(*)" />
                   <TextField fx:id="usernameField" promptText="请输入用户名" />
                </children>
             </VBox>
-            <VBox prefHeight="40.0" prefWidth="201.0">
+            <VBox maxWidth="250.0">
                <children>
                   <Label text="邮箱" />
                   <TextField fx:id="emailField" promptText="请输入邮箱地址" />
                </children>
             </VBox>
-            <VBox prefHeight="46.0" prefWidth="201.0">
+            <VBox maxWidth="250.0">
                <children>
                   <Label text="密码(*)" />
                   <PasswordField fx:id="passwordField" promptText="请输入密码" />
                </children>
             </VBox>
-            <VBox prefHeight="50.0" prefWidth="201.0">
+            <VBox maxWidth="250.0">
                <children>
                   <Label text="确认密码(*)" />
                   <PasswordField fx:id="confirmPasswordField" promptText="请再次确认密码" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#handleRegister" prefHeight="23.0" prefWidth="325.0" text="注册" />
+            <Button mnemonicParsing="false" onAction="#handleRegister" prefWidth="250.0" text="注册" />
             <Button mnemonicParsing="false" onAction="#handleBackToLogin" text="返回登录" />
          </children>
       </VBox>

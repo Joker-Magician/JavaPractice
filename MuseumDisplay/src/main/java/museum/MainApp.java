@@ -36,7 +36,7 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/Register.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(MainApp.class.getResource("/com/styles.css").toExternalForm());
+            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
@@ -49,8 +49,9 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/MainDashboard.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 1024, 768);
-            scene.getStylesheets().add(MainApp.class.getResource("/com/styles.css").toExternalForm());
+            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
             primaryStage.setScene(scene);
+            primaryStage.centerOnScreen();
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,8 +63,9 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/AdminDashboard.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 1024, 768);
-            scene.getStylesheets().add(MainApp.class.getResource("/com/styles.css").toExternalForm());
+            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
             primaryStage.setScene(scene);
+            primaryStage.centerOnScreen();
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

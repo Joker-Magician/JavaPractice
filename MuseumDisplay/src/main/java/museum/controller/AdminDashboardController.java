@@ -52,7 +52,13 @@ public class AdminDashboardController {
 
     @FXML
     public void initialize() {
+        welcomeLabel.setText("欢迎管理员: " + SessionManager.getInstance().getCurrentUser().getUserName());
 
+        setupHeritageTable();
+        setupArchitectureTable();
+
+        loadHeritageData();
+        loadArchitectureData();
     }
 
     public void setupHeritageTable() {

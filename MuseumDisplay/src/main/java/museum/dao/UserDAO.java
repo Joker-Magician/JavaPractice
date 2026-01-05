@@ -16,15 +16,17 @@ public class UserDAO {
     }
 
     public boolean register(User user){
-        String query = "intsert into users (username,password,email,role) values (?,?,?,?,?)";
+        // [MODIFIED] Fixed typo: "intsert" -> "insert"
+        String query = "insert into users (username,password,email,role) values (?,?,?,?,?)";
+        
+        // [MODIFIED] Used try-with-resources to automatically close Connection and PreparedStatement
         try(Connection conn = dbManager.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(query);) {
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, user.getUserName());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getEmail());
             pstmt.setString(4, user.getRole());
-
 
             int rows = pstmt.executeUpdate();
             return (rows > 0);
@@ -36,10 +38,11 @@ public class UserDAO {
 
     public User login(String username,String password){
         String query = "select * from users where username=? and password=?";
-        Connection conn = dbManager.getConnection();
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-
+        
+        // [MODIFIED] Added try-with-resources to prevent memory leaks (Connection was not closed previously)
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
             pstmt.setString(1, username);
             pstmt.setString(2, password);
 
@@ -62,9 +65,10 @@ public class UserDAO {
 
     public boolean isUsernameExists(String username) {
         String query = "select count(*) from users where username=?";
-        Connection conn = dbManager.getConnection();
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
+        
+        // [MODIFIED] Added try-with-resources for connection management
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();

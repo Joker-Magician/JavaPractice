@@ -28,7 +28,7 @@ public class RegisterController {
     public RegisterController() { this.userDAO = new UserDAO(); }
 
     @FXML
-    void handleBackToLogin(ActionEvent event) {
+    void handleRegister() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -64,7 +64,7 @@ public class RegisterController {
     }
 
     @FXML
-    void handleRegister(ActionEvent event) {
+    void handleBackToLogin() {
         MainApp.showLoginScreen();
     }
 

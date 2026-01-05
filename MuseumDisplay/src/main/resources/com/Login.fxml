@@ -28,8 +28,8 @@
                   <PasswordField fx:id="passwordField" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" prefWidth="250.0" text="登录" />
-            <Button mnemonicParsing="false" styleClass="secondary-button" text="还没有账号？去注册" />
+            <Button mnemonicParsing="false" onAction="#handleLogin" prefWidth="250.0" text="登录" />
+            <Button mnemonicParsing="false" onAction="#handleRegisterLink" styleClass="secondary-button" text="还没有账号？去注册" />
          </children>
       </VBox>
       <Label layoutX="14.0" layoutY="570.0" prefHeight="15.0" prefWidth="259.0" text="© 2025 中华古建筑、非遗数字博物馆展示系统" />
