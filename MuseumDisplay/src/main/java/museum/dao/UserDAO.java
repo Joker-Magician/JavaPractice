@@ -16,8 +16,8 @@ public class UserDAO {
     }
 
     public boolean register(User user){
-        // [MODIFIED] Fixed typo: "intsert" -> "insert"
-        String query = "insert into users (username,password,email,role) values (?,?,?,?,?)";
+        // [FIXED] 修复 SQL 占位符数量：从 5 个改为 4 个，与字段数量匹配
+        String query = "insert into users (username,password,email,role) values (?,?,?,?)";
         
         // [MODIFIED] Used try-with-resources to automatically close Connection and PreparedStatement
         try(Connection conn = dbManager.getConnection();

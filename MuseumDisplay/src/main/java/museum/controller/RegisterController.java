@@ -5,8 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import museum.MainApp;
-import museum.dao.UserDAO;
-import museum.entity.User;
+import museum.exception.DatabaseException;  // [ADDED] 导入异常类
+import museum.exception.ServiceException;  // [ADDED] 导入异常基类
+import museum.exception.ValidationException;  // [ADDED] 导入验证异常
+import museum.service.UserService;  // [ADDED] 导入 UserService
 import museum.utils.AlertUtil;
 
 public class RegisterController {
@@ -23,9 +25,11 @@ public class RegisterController {
     @FXML
     private TextField usernameField;
 
-    private UserDAO userDAO;
+    private UserService userService;  // [MODIFIED] 使用 UserService 替代 UserDAO
 
-    public RegisterController() { this.userDAO = new UserDAO(); }
+    public RegisterController() {
+        this.userService = new UserService();  // [MODIFIED] 初始化 UserService
+    }
 
     @FXML
     void handleRegister() {
@@ -34,32 +38,24 @@ public class RegisterController {
         String confirmPassword = confirmPasswordField.getText();
         String email = emailField.getText();
 
-        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            AlertUtil.showWarning("提示", "请填写所有必填字段");
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            AlertUtil.showError("错误", "两次输入的密码不一致");
-            return;
-        }
-
-        if (userDAO.isUsernameExists(username)) {
-            AlertUtil.showError("错误", "用户名已存在，请选择其他用户名");
-            return;
-        }
-
-        User newUser = new User();
-        newUser.setUserName(username);
-        newUser.setPassword(password);
-        newUser.setEmail(email);
-        newUser.setRole("user");
-
-        if(userDAO.register(newUser)) {
+        // [MODIFIED] 使用 Service 层处理所有业务逻辑（验证、检查重复、创建用户）
+        try {
+            // Service 内部会处理所有验证逻辑
+            userService.register(username, password, confirmPassword, email);
+            
+            // 注册成功
             AlertUtil.showInfo("成功", "注册成功！请登录。");
             MainApp.showLoginScreen();
-        } else {
-            AlertUtil.showError("错误", "注册失败，请稍后重试");
+            
+        } catch (ValidationException e) {
+            // 验证异常（如：密码不一致、用户名已存在等）
+            AlertUtil.showError("错误", e.getMessage());
+        } catch (DatabaseException e) {
+            // 数据库异常
+            AlertUtil.showError("错误", e.getMessage());
+        } catch (ServiceException e) {
+            // 其他业务异常
+            AlertUtil.showError("错误", "注册失败: " + e.getMessage());
         }
     }
 

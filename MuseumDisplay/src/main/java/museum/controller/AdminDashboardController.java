@@ -9,10 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import museum.MainApp;
-import museum.dao.ArchitectureDAO;
-import museum.dao.HeritageDAO;
 import museum.entity.Architecture;
 import museum.entity.Heritage;
+import museum.exception.DatabaseException;  // [ADDED] 导入异常类
+import museum.exception.ValidationException;  // [ADDED] 导入异常类
+import museum.service.ArchitectureService;  // [ADDED] 导入 ArchitectureService
+import museum.service.HeritageService;  // [ADDED] 导入 HeritageService
 import museum.utils.AlertUtil;
 import museum.utils.SessionManager;
 
@@ -40,14 +42,14 @@ public class AdminDashboardController {
 
     @FXML private Label welcomeLabel;
 
-    private HeritageDAO heritageDAO;
-    private ArchitectureDAO architectureDAO;
+    private HeritageService heritageService;  // [MODIFIED] 使用 HeritageService
+    private ArchitectureService architectureService;  // [MODIFIED] 使用 ArchitectureService
     private ObservableList<Heritage> heritageList;
     private ObservableList<Architecture> architectureList;
 
     public AdminDashboardController() {
-        this.heritageDAO = new HeritageDAO();
-        this.architectureDAO = new ArchitectureDAO();
+        this.heritageService = new HeritageService();  // [MODIFIED] 初始化 Service
+        this.architectureService = new ArchitectureService();  // [MODIFIED] 初始化 Service
     }
 
     @FXML
@@ -77,36 +79,56 @@ public class AdminDashboardController {
         aYearCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getYearBuilt()));
     }
 
+    // [MODIFIED] 使用 Service 层加载数据，添加异常处理
     private void loadHeritageData() {
-        heritageList = FXCollections.observableArrayList(heritageDAO.getAll());
-        heritageTable.setItems(heritageList);
+        try {
+            heritageList = FXCollections.observableArrayList(heritageService.getAllHeritage());
+            heritageTable.setItems(heritageList);
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "加载非遗数据失败: " + e.getMessage());
+        }
     }
 
+    // [MODIFIED] 使用 Service 层加载数据，添加异常处理
     private void loadArchitectureData() {
-        architectureList = FXCollections.observableArrayList(architectureDAO.getAll());
-        architectureTable.setItems(architectureList);
+        try {
+            architectureList = FXCollections.observableArrayList(architectureService.getAllArchitecture());
+            architectureTable.setItems(architectureList);
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "加载古建筑数据失败: " + e.getMessage());
+        }
     }
     
+    // [MODIFIED] 使用 Service 层删除，添加异常处理
     @FXML
     void handleDeleteHeritage(ActionEvent event) {
         Heritage selected = heritageTable.getSelectionModel().getSelectedItem();
         if(selected != null) {
             if(AlertUtil.showConfirmation("确认", "确定要删除 " + selected.getName() + " 吗?")) {
-                heritageDAO.delete(selected.getHeritageId());
-                loadHeritageData();
+                try {
+                    heritageService.deleteHeritage(selected.getHeritageId());
+                    loadHeritageData();
+                } catch (ValidationException | DatabaseException e) {
+                    AlertUtil.showError("错误", "删除失败: " + e.getMessage());
+                }
             }
         }else{
             AlertUtil.showWarning("提示", "请先选择一项");
         }
     }
 
+    // [MODIFIED] 使用 Service 层删除，添加异常处理
     @FXML
     void handleDeleteArchitecture(ActionEvent event) {
         Architecture selected = architectureTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             if (AlertUtil.showConfirmation("确认", "确定要删除 " + selected.getName() + " 吗?")) {
-                architectureDAO.delete(selected.getArchitectureID());
-                loadArchitectureData();
+                try {
+                    architectureService.deleteArchitecture(selected.getArchitectureID());
+                    loadArchitectureData();
+                } catch (ValidationException | DatabaseException e) {
+                    AlertUtil.showError("错误", "删除失败: " + e.getMessage());
+                }
             }
         } else {
             AlertUtil.showWarning("提示", "请先选择一项");
@@ -119,25 +141,29 @@ public class AdminDashboardController {
         MainApp.showLoginScreen();
     }
 
+    // [MODIFIED] 使用 Service 层搜索，添加异常处理
     @FXML
     void handleHeritageSearch() {
         String keyword = hSearchField.getText();
-        if (keyword == null || keyword.isEmpty()) {
-            loadHeritageData();
-        } else  {
-            heritageList = FXCollections.observableArrayList(heritageDAO.searchByName(keyword));
+        try {
+            heritageList = FXCollections.observableArrayList(
+                heritageService.searchHeritage(keyword));
             heritageTable.setItems(heritageList);
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "搜索失败: " + e.getMessage());
         }
     }
 
+    // [MODIFIED] 使用 Service 层搜索，添加异常处理
     @FXML
     void handleArchitectureSearch() {
         String keyword = aSearchField.getText();
-        if (keyword == null || keyword.isEmpty()) {
-            loadHeritageData();
-        } else {
-            architectureList = FXCollections.observableArrayList(architectureDAO.searchByName(keyword));
+        try {
+            architectureList = FXCollections.observableArrayList(
+                architectureService.searchArchitecture(keyword));
             architectureTable.setItems(architectureList);
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "搜索失败: " + e.getMessage());
         }
     }
 
@@ -185,11 +211,16 @@ public class AdminDashboardController {
         });
 
         Optional<Heritage> result = dialog.showAndWait();
+        // [MODIFIED] 使用 Service 层创建，添加异常处理
         result.ifPresent(heritage -> {
-            if(heritageDAO.create(heritage)) {
-                loadHeritageData();
-            }else{
-                AlertUtil.showError("错误", "添加失败");
+            try {
+                if(heritageService.createHeritage(heritage)) {
+                    loadHeritageData();
+                } else {
+                    AlertUtil.showError("错误", "添加失败");
+                }
+            } catch (ValidationException | DatabaseException e) {
+                AlertUtil.showError("错误", "添加失败: " + e.getMessage());
             }
         });
     }
@@ -239,13 +270,17 @@ public class AdminDashboardController {
         });
 
         Optional<Architecture> result = dialog.showAndWait();
+        // [MODIFIED] 使用 Service 层创建，添加异常处理
         result.ifPresent(arch -> {
-            if (architectureDAO.create(arch)) {
-                loadArchitectureData();
-            } else {
-                AlertUtil.showError("错误", "添加失败");
+            try {
+                if (architectureService.createArchitecture(arch)) {
+                    loadArchitectureData();
+                } else {
+                    AlertUtil.showError("错误", "添加失败");
+                }
+            } catch (ValidationException | DatabaseException e) {
+                AlertUtil.showError("错误", "添加失败: " + e.getMessage());
             }
         });
     }
 }
-

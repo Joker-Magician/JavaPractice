@@ -8,13 +8,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import museum.MainApp;
-import museum.constants.AppConstants; // [ADDED] 导入常量类
-import museum.dao.ArchitectureDAO;
-import museum.dao.HeritageDAO;
+import museum.constants.AppConstants;
 import museum.entity.Architecture;
 import museum.entity.Heritage;
+import museum.exception.DatabaseException;  // [ADDED] 导入异常类
+import museum.service.ArchitectureService;  // [ADDED] 导入 ArchitectureService
+import museum.service.HeritageService;  // [ADDED] 导入 HeritageService
+import museum.utils.AlertUtil;  // [ADDED] 导入 AlertUtil
 import museum.utils.SessionManager;
-import museum.utils.UIHelper; // [ADDED] 导入 UI 工具类
+import museum.utils.UIHelper;
 
 public class MainDashboardController {
 
@@ -36,12 +38,12 @@ public class MainDashboardController {
     @FXML
     private Label welcomeLabel;
 
-    private HeritageDAO heritageDAO;
-    private ArchitectureDAO architectureDAO;
+    private HeritageService heritageService;  // [MODIFIED] 使用 HeritageService
+    private ArchitectureService architectureService;  // [MODIFIED] 使用 ArchitectureService
 
     public MainDashboardController() {
-        this.heritageDAO = new HeritageDAO();
-        this.architectureDAO = new ArchitectureDAO();
+        this.heritageService = new HeritageService();  // [MODIFIED] 初始化 Service
+        this.architectureService = new ArchitectureService();  // [MODIFIED] 初始化 Service
     }
 
     @FXML
@@ -76,9 +78,16 @@ public class MainDashboardController {
         );
     }
 
+    // [MODIFIED] 使用 Service 层获取数据，添加异常处理
     private void refreshData() {
-        heritageListView.setItems(FXCollections.observableArrayList(heritageDAO.getAll()));
-        architectureListView.setItems(FXCollections.observableArrayList(architectureDAO.getAll()));
+        try {
+            heritageListView.setItems(FXCollections.observableArrayList(
+                heritageService.getAllHeritage()));
+            architectureListView.setItems(FXCollections.observableArrayList(
+                architectureService.getAllArchitecture()));
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "加载数据失败: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -87,14 +96,17 @@ public class MainDashboardController {
         MainApp.showLoginScreen();
     }
 
+    // [MODIFIED] 使用 Service 层搜索，添加异常处理
     @FXML
     void handleSearch(ActionEvent event) {
         String keyword = searchField.getText();
-        if (keyword == null || keyword.isEmpty()) {
-            refreshData();
-        } else {
-            heritageListView.setItems(FXCollections.observableArrayList(heritageDAO.searchByName(keyword)));
-            architectureListView.setItems(FXCollections.observableArrayList(architectureDAO.searchByName(keyword)));
+        try {
+            heritageListView.setItems(FXCollections.observableArrayList(
+                heritageService.searchHeritage(keyword)));
+            architectureListView.setItems(FXCollections.observableArrayList(
+                architectureService.searchArchitecture(keyword)));
+        } catch (DatabaseException e) {
+            AlertUtil.showError("错误", "搜索失败: " + e.getMessage());
         }
     }
 
