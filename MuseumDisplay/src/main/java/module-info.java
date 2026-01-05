@@ -3,6 +3,7 @@ module com.example.museumdisplay {
     requires javafx.fxml;
     requires java.sql;
     requires com.example.museumdisplay;
+    requires java.desktop;
 
 
     opens com.example.museumdisplay to javafx.fxml;

@@ -1,5 +1,7 @@
 package museum.entity;
 
+import java.time.LocalDateTime;
+
 public class Heritage {
     private int heritageId;
     private String name;
@@ -9,7 +11,7 @@ public class Heritage {
     private String imagePath;
     private int yearRecognized;
     private int createBy;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public Heritage() {}
 
@@ -51,4 +53,5 @@ public class Heritage {
 
     public String getCreatedAt() {return createdAt;}
     public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
+
 }
