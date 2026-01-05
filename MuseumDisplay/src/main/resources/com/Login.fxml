@@ -8,12 +8,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="museum.controller.LoginController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="museum.controller.LoginController">
    <children>
-      <VBox layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" spacing="20.0">
+      <VBox alignment="CENTER" layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" spacing="20.0">
          <children>
-            <Label text="中华古建筑/非遗" />
+            <Label styleClass="header-label" text="中华古建筑/非遗" />
             <Label text="数字博物馆" />
             <Line endX="100.0" startX="-100.0" />
             <Label text="用户登录" />
@@ -33,6 +32,6 @@
             <Button mnemonicParsing="false" text="还没有账号？去注册" />
          </children>
       </VBox>
-      <Label layoutX="14.0" layoutY="478.0" prefHeight="15.0" prefWidth="259.0" text="© 2025 中华古建筑、非遗数字博物馆展示系统" />
+      <Label layoutX="14.0" layoutY="570.0" prefHeight="15.0" prefWidth="259.0" text="© 2025 中华古建筑、非遗数字博物馆展示系统" />
    </children>
 </AnchorPane>

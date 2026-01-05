@@ -1,6 +1,6 @@
 package museum.dao;
 
-import museum.model.Heritage;
+import museum.entity.Heritage;
 import museum.utils.DBUtil;
 
 import java.sql.*;
@@ -34,7 +34,7 @@ public class HeritageDAO {
         }
     }
 
-    public List<Heritage> readAll() {
+    public List<Heritage> getAll() {
         List<Heritage> list = new ArrayList<>();
         String query = "SELECT * FROM heritage";
         try (Connection conn = dbManager.getConnection();
@@ -50,7 +50,7 @@ public class HeritageDAO {
         return list;
     }
 
-    public List<Heritage> search(String keyword) {
+    public List<Heritage> searchByName(String keyword) {
         List<Heritage> list = new ArrayList<>();
         String query = "SELECT * FROM heritage WHERE name LIKE ? OR category LIKE ? OR region LIKE ?";
         try (Connection conn = dbManager.getConnection();

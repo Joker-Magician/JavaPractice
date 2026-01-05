@@ -17,7 +17,7 @@ public class MainApp {
         showLoginScreen();
     }
 
-    public void showLoginScreen() {
+    public static void showLoginScreen() {
         try {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/Login.fxml"));
             Parent root = loader.load();
@@ -70,6 +70,5 @@ public class MainApp {
     }
 
     public static void main(String[] args) {
-
     }
 }

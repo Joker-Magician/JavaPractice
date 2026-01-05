@@ -15,16 +15,13 @@ public class Heritage {
 
     public Heritage() {}
 
-    public Heritage(int heritageId, String name, String category, String region, String description, String imagePath, int yearRecognized, int createBy, String createdAt) {
-        this.heritageId = heritageId;
+    public Heritage(String name, String category, String region, String description, String imagePath, int yearRecognized) {
         this.name = name;
         this.category = category;
         this.region = region;
         this.description = description;
         this.imagePath = imagePath;
         this.yearRecognized = yearRecognized;
-        this.createBy = createBy;
-        this.createdAt = createdAt;
     }
 
     public int getHeritageId() {return heritageId;}
@@ -48,10 +45,9 @@ public class Heritage {
     public int getYearRecognized() {return yearRecognized;}
     public void setYearRecognized(int yearRecognized) {this.yearRecognized = yearRecognized;}
 
-    public int getCreateBy() {return createBy;}
-    public void setCreateBy(int createBy) {this.createBy = createBy;}
+    public int getCreatedBy() {return createBy;}
+    public void setCreatedBy(int createBy) {this.createBy = createBy;}
 
-    public String getCreatedAt() {return createdAt;}
-    public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
-
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
