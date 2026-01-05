@@ -16,8 +16,7 @@ public class Architecture {
 
     public Architecture() {}
 
-    public Architecture(int architectureID, String name, String dynasty, String location, String type, String description, String imagePath, int yearBuilt, int createdBy, LocalDateTime createdAt) {
-        this.architectureID = architectureID;
+    public Architecture(String name, String dynasty, String location, String type, String description, String imagePath, int yearBuilt) {
         this.name = name;
         this.dynasty = dynasty;
         this.location = location;
@@ -25,8 +24,6 @@ public class Architecture {
         this.description = description;
         this.imagePath = imagePath;
         this.yearBuilt = yearBuilt;
-        this.createdBy = createdBy;
-        this.createdAt = createdAt;
     }
 
     public int getArchitectureID() {return architectureID;}

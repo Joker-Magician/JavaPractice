@@ -25,13 +25,13 @@ import java.io.IOException;
 public class MainDashboardController {
 
     @FXML
-    private ListView<?> architectureListView;
+    private ListView<Architecture> architectureListView;
 
     @FXML
     private VBox architectureSection;
 
     @FXML
-    private ListView<?> heritageListView;
+    private ListView<Heritage> heritageListView;
 
     @FXML
     private VBox heritageSection;
@@ -201,6 +201,4 @@ public class MainDashboardController {
             e.printStackTrace();
         }
     }
-}
-
 }

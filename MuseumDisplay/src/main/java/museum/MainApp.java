@@ -8,9 +8,10 @@ import javafx.application.Application;
 
 import java.io.IOException;
 
-public class MainApp {
+public class MainApp extends Application {
     private static Stage primaryStage;
 
+    @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
         primaryStage.setTitle("中华古建筑/非遗数字博物馆");
@@ -22,7 +23,7 @@ public class MainApp {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/com/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(MainApp.class.getResource("/com/styles.css").toExternalForm());
+            scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
@@ -70,5 +71,6 @@ public class MainApp {
     }
 
     public static void main(String[] args) {
+        launch(args);
     }
 }

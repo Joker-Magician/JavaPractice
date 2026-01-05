@@ -28,10 +28,10 @@ public class DBUtil {
             prop.load(is);
 
             // 3. 将配置文件中的值赋值给变量
-            this.dbUrl = prop.getProperty("dbUrl");
-            this.dbUser = prop.getProperty("dbUser");
-            this.dbPassword = prop.getProperty("dbPassword");
-            this.dbDriver = prop.getProperty("dbDriver");
+            this.dbUrl = prop.getProperty("url");
+            this.dbUser = prop.getProperty("username");
+            this.dbPassword = prop.getProperty("password");
+            this.dbDriver = prop.getProperty("driver");
 
             // 4. 连接数据库
             Class.forName(dbDriver);
