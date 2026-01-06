@@ -40,3 +40,6 @@ build/
 
 # 忽略数据库配置文件，防止密码上传
 db.properties
+
+# 忽略照片上传
+/data/images/
