@@ -1,5 +1,76 @@
 # 中华古建筑/非遗数字博物馆 - 代码重构方案
 
+## 零、当前项目架构 (Current Architecture)
+
+基于当前代码库生成的架构图如下：
+
+```mermaid
+graph TB
+    subgraph Presentation_Layer [表现层 (Presentation Layer)]
+        MainApp[MainApp.java]
+        
+        subgraph Controllers [Controllers]
+            LoginC[LoginController]
+            RegisterC[RegisterController]
+            MainDB_C[MainDashboardController]
+            AdminDB_C[AdminDashboardController]
+            HeritageDetailC[HeritageDetailController]
+            ArchDetailC[ArchitectureDetailController]
+        end
+        
+        subgraph FXML_Views [FXML Views]
+            LoginView[Login.fxml]
+            RegisterView[Register.fxml]
+            MainDBView[MainDashboard.fxml]
+            AdminDBView[AdminDashboard.fxml]
+        end
+    end
+
+    subgraph Data_Layer [数据访问层 (DAO Layer)]
+        UserDAO[UserDAO]
+        HeritageDAO[HeritageDAO]
+        ArchitectureDAO[ArchitectureDAO]
+    end
+
+    subgraph Model_Layer [模型层 (Entity Layer)]
+        User[User]
+        Heritage[Heritage]
+        Architecture[Architecture]
+    end
+
+    subgraph Utils [工具类 (Utils)]
+        DBUtil[DBUtil]
+        SessionManager[SessionManager]
+        AlertUtil[AlertUtil]
+        ImageManager[ImageManager]
+    end
+
+    %% Relationships
+    MainApp --> LoginC
+    MainApp --> RegisterC
+    MainApp --> MainDB_C
+    MainApp --> AdminDB_C
+    
+    LoginC --> UserDAO
+    LoginC --> SessionManager
+    RegisterC --> UserDAO
+    
+    MainDB_C --> HeritageDAO
+    MainDB_C --> ArchitectureDAO
+    MainDB_C --> HeritageDetailC
+    MainDB_C --> ArchDetailC
+    
+    AdminDB_C --> HeritageDAO
+    AdminDB_C --> ArchitectureDAO
+    AdminDB_C --> ImageManager
+    
+    UserDAO --> DBUtil
+    HeritageDAO --> DBUtil
+    ArchitectureDAO --> DBUtil
+    
+    Controllers --> AlertUtil
+```
+
 ## 一、重构目标
 
 本次重构旨在提升系统的**可维护性**、**安全性**、**性能**和**用户体验**，为项目的长期发展打下坚实基础。
@@ -16,7 +87,7 @@
 - 🔴 **SQL 注入风险**：虽然使用了 PreparedStatement，但仍需审查
 
 ### 2.3 代码质量问题
-- ⚠️ **代码重复**：[MainDashboardController](file:///e:/github_repos/JavaPractice/MuseumDisplay/src/main/java/museum/controller/MainDashboardController.java#25-205) 中列表设置逻辑重复
+- ⚠️ **代码重复**：[MainDashboardController](file:///e:/github_repos/JavaPractice/MuseumDisplay/src/main/java/museum/controller/MainDashboardController.java#21-157) 中列表设置逻辑重复
 - ⚠️ **硬编码**：颜色、尺寸等常量散落在代码中
 - ⚠️ **资源管理**：部分异常处理只是打印堆栈，没有向用户反馈
 
@@ -259,6 +330,59 @@ Task<ObservableList<Heritage>> loadTask = new Task<>() {
 
 ---
 
+### 阶段五：图片资源管理（功能增强）
+
+#### 5.1 自动化图片管理
+
+**目标**：简化管理员上传图片流程，并实现图片的统一存储与便携性。
+
+##### 工作原理
+1.  管理员点击"选择图片"按钮。
+2.  系统接收文件，自动重命名（UUID防止重名）并复制到项目下的 `data/images/` 目录。
+3.  数据库仅存储相对路径（如 `data/images/abc-123.jpg`）。
+
+##### 新建工具类
+```java
+// src/main/java/museum/utils/ImageManager.java
+public class ImageManager {
+    private static final String STORAGE_DIR = "data/images/";
+
+    public static String saveImage(File sourceFile) throws IOException {
+        // 1. 确保存储目录存在
+        File dir = new File(STORAGE_DIR);
+        if (!dir.exists()) dir.mkdirs();
+
+        // 2. 生成唯一文件名 (防止覆盖)
+        String ext = getFileExtension(sourceFile.getName());
+        String newName = UUID.randomUUID().toString() + "." + ext;
+        File destFile = new File(dir, newName);
+
+        // 3. 复制文件
+        Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // 4. 返回相对路径
+        return STORAGE_DIR + newName;
+    }
+}
+```
+
+##### UI 改造
+- **[修改]** `AdminDashboardController.java`
+    - 将"图片路径"文本框设为只读。
+    -在其旁新增一个"上传..."按钮。
+    - 按钮点击事件：
+      ```java
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+      File selectedFile = fileChooser.showOpenDialog(stage);
+      if (selectedFile != null) {
+          String savedPath = ImageManager.saveImage(selectedFile);
+          imagePathField.setText(savedPath); // 显示相对路径
+      }
+      ```
+
+---
+
 ## 四、实施计划
 
 ### 推荐顺序
@@ -269,6 +393,7 @@ Task<ObservableList<Heritage>> loadTask = new Task<>() {
 | **Phase 2** | 引入服务层 | 3-4小时 | 🟡 中（架构调整）|
 | **Phase 3** | 代码重复消除 + 常量提取 | 2小时 | 🟢 低 |
 | **Phase 4** | UX 优化（错误提示/加载/动画）| 2-3小时 | 🟢 低 |
+| **Phase 5** | 图片自动化管理 | 1-2小时 | 🟢 低 |
 
 ### 建议步骤
 

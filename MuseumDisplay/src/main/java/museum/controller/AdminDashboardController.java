@@ -19,6 +19,11 @@ import museum.utils.AlertUtil;
 import museum.utils.SessionManager;
 
 import java.util.Optional;
+import javafx.stage.FileChooser; // [ADDED]
+import java.io.File; // [ADDED]
+import museum.utils.ImageManager; // [ADDED]
+import java.io.IOException; // [ADDED]
+import javafx.scene.layout.HBox; // [ADDED]
 
 public class AdminDashboardController {
 
@@ -69,6 +74,16 @@ public class AdminDashboardController {
         hCategoryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory()));
         hRegionCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRegion()));
         hYearCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getYearRecognized()));
+        
+        // [ADDED] 添加双击事件监听器，双击表格行进入编辑模式
+        heritageTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Heritage selected = heritageTable.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    handleEditHeritage(selected);
+                }
+            }
+        });
     }
     
     public void setupArchitectureTable() {
@@ -77,6 +92,16 @@ public class AdminDashboardController {
         aDynastyCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDynasty()));
         aTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
         aYearCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getYearBuilt()));
+        
+        // [ADDED] 添加双击事件监听器，双击表格行进入编辑模式
+        architectureTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Architecture selected = architectureTable.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    handleEditArchitecture(selected);
+                }
+            }
+        });
     }
 
     // [MODIFIED] 使用 Service 层加载数据，添加异常处理
@@ -190,7 +215,7 @@ public class AdminDashboardController {
         grid.add(new Label("类别"), 0, 1);    grid.add(category, 1, 1);
         grid.add(new Label("地区:"), 0, 2);   grid.add(region, 1, 2);
         grid.add(new Label("描述:"), 0, 3);   grid.add(description, 1, 3);
-        grid.add(new Label("图片:"), 0, 4);   grid.add(imagePath, 1, 4);
+        grid.add(new Label("图片:"), 0, 4);   grid.add(createImageUploadRow(imagePath), 1, 4); // [MODIFIED] 使用上传组件
         grid.add(new Label("年份:"), 0, 5);   grid.add(year, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
@@ -250,7 +275,7 @@ public class AdminDashboardController {
         grid.add(new Label("位置:"), 0, 2);   grid.add(location, 1, 2);
         grid.add(new Label("类型:"), 0, 3);   grid.add(type, 1, 3);
         grid.add(new Label("描述:"), 0, 4);   grid.add(description, 1, 4);
-        grid.add(new Label("图片:"), 0, 5);   grid.add(imagePath, 1, 5);
+        grid.add(new Label("图片:"), 0, 5);   grid.add(createImageUploadRow(imagePath), 1, 5); // [MODIFIED] 使用上传组件
         grid.add(new Label("年份:"), 0, 6);   grid.add(year, 1, 6);
 
         dialog.getDialogPane().setContent(grid);
@@ -282,5 +307,179 @@ public class AdminDashboardController {
                 AlertUtil.showError("错误", "添加失败: " + e.getMessage());
             }
         });
+    }
+
+    // [ADDED] 编辑非遗项目方法
+    void handleEditHeritage(Heritage heritage) {
+        Dialog<Heritage> dialog = new Dialog<>();
+        dialog.setTitle("编辑非遗项目");
+
+        ButtonType saveButtonType = new ButtonType("保存", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        // [ADDED] 预填充现有数据
+        TextField name = new TextField(heritage.getName());
+        name.setPromptText("名称");
+        TextField category = new TextField(heritage.getCategory());
+        category.setPromptText("类别");
+        TextField region = new TextField(heritage.getRegion());
+        region.setPromptText("地区");
+        TextArea description = new TextArea(heritage.getDescription());
+        description.setPromptText("描述");
+        TextField imagePath = new TextField(heritage.getImagePath());
+        imagePath.setPromptText("图片路径");
+        TextField year = new TextField(String.valueOf(heritage.getYearRecognized()));
+        year.setPromptText("入选年份");
+
+        grid.add(new Label("名称:"), 0, 0);    grid.add(name, 1, 0);
+        grid.add(new Label("类别:"), 0, 1);    grid.add(category, 1, 1);
+        grid.add(new Label("地区:"), 0, 2);    grid.add(region, 1, 2);
+        grid.add(new Label("描述:"), 0, 3);    grid.add(description, 1, 3);
+        grid.add(new Label("图片:"), 0, 4);    grid.add(createImageUploadRow(imagePath), 1, 4); // [MODIFIED] 使用上传组件
+        grid.add(new Label("年份:"), 0, 5);    grid.add(year, 1, 5);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                try {
+                    // 更新现有对象的属性
+                    heritage.setName(name.getText());
+                    heritage.setCategory(category.getText());
+                    heritage.setRegion(region.getText());
+                    heritage.setDescription(description.getText());
+                    heritage.setImagePath(imagePath.getText());
+                    heritage.setYearRecognized(Integer.parseInt(year.getText()));
+                    return heritage;
+                } catch (NumberFormatException e) {
+                    AlertUtil.showError("错误", "年份必须是数字");
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        Optional<Heritage> result = dialog.showAndWait();
+        // [ADDED] 调用 Service 层的 update 方法
+        result.ifPresent(h -> {
+            try {
+                if (heritageService.updateHeritage(h)) {
+                    AlertUtil.showInfo("成功", "更新成功！");
+                    loadHeritageData();
+                } else {
+                    AlertUtil.showError("错误", "更新失败");
+                }
+            } catch (ValidationException | DatabaseException e) {
+                AlertUtil.showError("错误", "更新失败: " + e.getMessage());
+            }
+        });
+    }
+
+    // [ADDED] 编辑古建筑项目方法
+    void handleEditArchitecture(Architecture architecture) {
+        Dialog<Architecture> dialog = new Dialog<>();
+        dialog.setTitle("编辑古建筑");
+
+        ButtonType saveButtonType = new ButtonType("保存", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        // [ADDED] 预填充现有数据
+        TextField name = new TextField(architecture.getName());
+        name.setPromptText("名称");
+        TextField dynasty = new TextField(architecture.getDynasty());
+        dynasty.setPromptText("朝代");
+        TextField location = new TextField(architecture.getLocation());
+        location.setPromptText("位置");
+        TextField type = new TextField(architecture.getType());
+        type.setPromptText("类型");
+        TextArea description = new TextArea(architecture.getDescription());
+        description.setPromptText("描述");
+        TextField imagePath = new TextField(architecture.getImagePath());
+        imagePath.setPromptText("图片路径");
+        TextField year = new TextField(String.valueOf(architecture.getYearBuilt()));
+        year.setPromptText("建造年份");
+
+        grid.add(new Label("名称:"), 0, 0);    grid.add(name, 1, 0);
+        grid.add(new Label("朝代:"), 0, 1);    grid.add(dynasty, 1, 1);
+        grid.add(new Label("位置:"), 0, 2);    grid.add(location, 1, 2);
+        grid.add(new Label("类型:"), 0, 3);    grid.add(type, 1, 3);
+        grid.add(new Label("描述:"), 0, 4);    grid.add(description, 1, 4);
+        grid.add(new Label("图片:"), 0, 5);    grid.add(createImageUploadRow(imagePath), 1, 5); // [MODIFIED] 使用上传组件
+        grid.add(new Label("年份:"), 0, 6);    grid.add(year, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                try {
+                    // 更新现有对象的属性
+                    architecture.setName(name.getText());
+                    architecture.setDynasty(dynasty.getText());
+                    architecture.setLocation(location.getText());
+                    architecture.setType(type.getText());
+                    architecture.setDescription(description.getText());
+                    architecture.setImagePath(imagePath.getText());
+                    architecture.setYearBuilt(Integer.parseInt(year.getText()));
+                    return architecture;
+                } catch (NumberFormatException e) {
+                    AlertUtil.showError("错误", "年份必须是数字");
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        Optional<Architecture> result = dialog.showAndWait();
+        // [ADDED] 调用 Service 层的 update 方法
+        result.ifPresent(arch -> {
+            try {
+                if (architectureService.updateArchitecture(arch)) {
+                    AlertUtil.showInfo("成功", "更新成功！");
+                    loadArchitectureData();
+                } else {
+                    AlertUtil.showError("错误", "更新失败");
+                }
+            } catch (ValidationException | DatabaseException e) {
+                AlertUtil.showError("错误", "更新失败: " + e.getMessage());
+            }
+        });
+    }
+
+    // [ADDED] 创建图片上传行组件
+    private HBox createImageUploadRow(TextField imagePathField) {
+        imagePathField.setEditable(false); // 设为只读，强制使用上传
+        
+        Button uploadBtn = new Button("上传...");
+        uploadBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("选择图片");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("图片文件", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+            
+            // 获取当前窗口作为父窗口
+            javafx.stage.Window window = uploadBtn.getScene().getWindow();
+            File selectedFile = fileChooser.showOpenDialog(window);
+            
+            if (selectedFile != null) {
+                try {
+                    String savedPath = ImageManager.saveImage(selectedFile);
+                    imagePathField.setText(savedPath);
+                } catch (IOException ex) {
+                    AlertUtil.showError("错误", "图片保存失败: " + ex.getMessage());
+                }
+            }
+        });
+        
+        HBox box = new HBox(10);
+        box.getChildren().addAll(imagePathField, uploadBtn);
+        return box;
     }
 }
