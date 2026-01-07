@@ -47,9 +47,9 @@ public class DBUtil {
     }
 
     public static synchronized DBUtil getInstance() {
-        if (instance == null) {
-            instance = new DBUtil();
-        }
+        if (instance == null) {         // 检查 instance 变量是否已经被初始化
+            instance = new DBUtil();    // 如果还没有初始化（即第一次调用时），创建一个新的 DBUtil 对象
+        }                               // 如果已经初始化过了，直接返回现有的那个对象
         return instance;
     }
 

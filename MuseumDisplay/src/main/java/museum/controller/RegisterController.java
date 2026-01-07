@@ -5,10 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import museum.MainApp;
-import museum.exception.DatabaseException;  // [ADDED] 导入异常类
-import museum.exception.ServiceException;  // [ADDED] 导入异常基类
-import museum.exception.ValidationException;  // [ADDED] 导入验证异常
-import museum.service.UserService;  // [ADDED] 导入 UserService
+import museum.exception.DatabaseException; 
+import museum.exception.ServiceException; 
+import museum.exception.ValidationException;  
+import museum.service.UserService;  
 import museum.utils.AlertUtil;
 
 public class RegisterController {

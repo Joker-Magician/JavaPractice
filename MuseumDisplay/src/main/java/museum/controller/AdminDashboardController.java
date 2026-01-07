@@ -11,19 +11,19 @@ import javafx.scene.layout.GridPane;
 import museum.MainApp;
 import museum.entity.Architecture;
 import museum.entity.Heritage;
-import museum.exception.DatabaseException;  // [ADDED] 导入异常类
-import museum.exception.ValidationException;  // [ADDED] 导入异常类
-import museum.service.ArchitectureService;  // [ADDED] 导入 ArchitectureService
-import museum.service.HeritageService;  // [ADDED] 导入 HeritageService
+import museum.exception.DatabaseException;  
+import museum.exception.ValidationException;  
+import museum.service.ArchitectureService;  
+import museum.service.HeritageService;  
 import museum.utils.AlertUtil;
 import museum.utils.SessionManager;
 
 import java.util.Optional;
-import javafx.stage.FileChooser; // [ADDED]
-import java.io.File; // [ADDED]
-import museum.utils.ImageManager; // [ADDED]
-import java.io.IOException; // [ADDED]
-import javafx.scene.layout.HBox; // [ADDED]
+import javafx.stage.FileChooser; 
+import java.io.File; 
+import museum.utils.ImageManager; 
+import java.io.IOException; 
+import javafx.scene.layout.HBox; 
 
 public class AdminDashboardController {
 

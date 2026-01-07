@@ -11,10 +11,10 @@ import museum.MainApp;
 import museum.constants.AppConstants;
 import museum.entity.Architecture;
 import museum.entity.Heritage;
-import museum.exception.DatabaseException;  // [ADDED] 导入异常类
-import museum.service.ArchitectureService;  // [ADDED] 导入 ArchitectureService
-import museum.service.HeritageService;  // [ADDED] 导入 HeritageService
-import museum.utils.AlertUtil;  // [ADDED] 导入 AlertUtil
+import museum.exception.DatabaseException;  
+import museum.service.ArchitectureService;  
+import museum.service.HeritageService;  
+import museum.utils.AlertUtil;  
 import museum.utils.SessionManager;
 import museum.utils.UIHelper;
 

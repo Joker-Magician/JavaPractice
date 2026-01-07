@@ -60,10 +60,10 @@ public class UIHelper {
 
         // 设置双击事件监听器
         listView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2) {    // 检测双击
                 T selected = listView.getSelectionModel().getSelectedItem();
                 if (selected != null && onDoubleClick != null) {
-                    onDoubleClick.accept(selected);
+                    onDoubleClick.accept(selected); // 执行回调
                 }
             }
         });
@@ -86,15 +86,17 @@ public class UIHelper {
             ControllerSetter<C, T> controllerSetter
     ) {
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(fxmlPath));    //从资源路径加载FXML界面文件
             Parent root = loader.load();
 
+            // 设置Controller数据
             C controller = loader.getController();
             controllerSetter.setData(controller, entity);
-
+            
+            // 创建和显示窗口
             Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle(title);    // 设置窗口标题
+            stage.initModality(Modality.APPLICATION_MODAL);    // 设置窗口模态
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
